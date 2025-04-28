@@ -25,16 +25,20 @@ flowchart TD
     C --> D{Server Loop}
     D --> E[Accept Client Connection]
     E --> F[Create UserAccount]
-    F --> G[Register User in Database]
+    F --> G[Register UserAccount in Database Singleton]
     D --> H[Receive Client Message]
     H --> I[Parse Message]
     I --> J{Command Dispatcher}
-    J --> K1[JOIN Command: Channel join/create via Channel Manager]
+    J --> K1[JOIN Command]
+    K1 --> K1a[Check if Channel exists in Database]
+    K1a -->|Exists| K1b[Join Channel]
+    K1a -->|Not Exists| K1c[Create new Channel and save in Database]
     J --> K2[NICK Command: Update UserAccount nickname]
     J --> K3[PRIVMSG Command: Send message to Channel/User]
     J --> K4[Other Commands: Handle accordingly]
-    D --> L[Disconnect Client: Clean up Database/UserAccount]
-    L --> D
+    D --> L[Client Disconnects]
+    L --> M[Remove UserAccount from Database]
+    M --> D
 ```
 
 ---
